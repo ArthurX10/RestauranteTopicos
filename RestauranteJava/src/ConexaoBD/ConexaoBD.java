@@ -2,7 +2,7 @@ package ConexaoBD;
 import java.sql.*;
 
 public class ConexaoBD {
-    private static final String url = "jdbc:mysql:/seu_local_host//seu_banco_de_dados"; // coloquem o banco de dados de vocês
+    private static final String url = "jdbc:mysql://seu_usuario/seu_banco_de_dados"; // coloquem o banco de dados de vocês
     private static final String user = "seu_usuario";
     private static final String password = "sua_senha";
 
