@@ -1,5 +1,6 @@
 package classes;
 
+import java.sql.Date; 
 import java.time.LocalDateTime;
 
 public class Pedido{
@@ -7,8 +8,13 @@ public class Pedido{
     private Prato prato; // apenas um prato por pedido
     private String cliente;
     private int quantidade;
-    private LocalDateTime dataHora;
+   private LocalDateTime dataHora;
     private String status;
+
+
+    public Pedido() {
+        // contrutor vazio
+    }
 
     public Pedido(int idPedido, Prato prato, String cliente, int quantidade, LocalDateTime dataHora) {
         this.idPedido = idPedido;
@@ -18,6 +24,7 @@ public class Pedido{
         this.dataHora = dataHora;
         this.status = "PENDENTE";
     }
+
 
 
 
@@ -53,7 +60,7 @@ public class Pedido{
         this.quantidade = quantidade;
     }
 
-    public LocalDateTime getDataHora() {
+   public LocalDateTime getDataHora() {
         return dataHora;
     }
 
