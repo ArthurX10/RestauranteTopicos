@@ -91,7 +91,7 @@ public class PratoDAO extends ConexaoBD {
         }
     }
 
-    public Prato pesquisar(int codigo) {
+    public Prato pesquisarPrato(int codigo) {
         String sql = "SELECT * FROM tbPrato WHERE PRA_CODIGO = ?";
         Prato prato = null;
 
