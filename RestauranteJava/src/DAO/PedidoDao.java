@@ -16,7 +16,7 @@ public class PedidoDao {
             stmt.setInt(2, pedido.getQuantidade());
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(pedido.getDataHora()));
             stmt.setString(4, pedido.getStatus());
-            stmt.setInt(5, pedido.getPrato().getCodigo()); // padronize aqui!
+            stmt.setInt(5, pedido.getPrato().getCodigo());
             stmt.executeUpdate();
         } catch(SQLException error) {
             throw new RuntimeException("Erro ao criar o Pedido", error);
@@ -32,7 +32,7 @@ public class PedidoDao {
                 Pedido pedido = new Pedido();
                 Prato prato = new Prato();
                 pedido.setIdPedido(result.getInt("PED_CODIGO"));
-                prato.setCodigo(result.getInt("PRA_CODIGO")); // padronize aqui!
+                prato.setCodigo(result.getInt("PRA_CODIGO")); 
                 pedido.setPrato(prato);
                 pedido.setCliente(result.getString("PED_CLIENTE"));
                 pedido.setQuantidade(result.getInt("PED_QTDE"));
@@ -56,7 +56,7 @@ public class PedidoDao {
             stmt.setInt(2, pedido.getQuantidade());
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(pedido.getDataHora()));
             stmt.setString(4, pedido.getStatus());
-            stmt.setInt(5, pedido.getPrato().getCodigo()); // padronize aqui!
+            stmt.setInt(5, pedido.getPrato().getCodigo()); 
             stmt.setInt(6, pedido.getIdPedido());
             stmt.executeUpdate();
         } catch(SQLException error) {
