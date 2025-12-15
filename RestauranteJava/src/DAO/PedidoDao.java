@@ -8,7 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// classe do CRUD, (Create, Read, Update,Delete)
 public class PedidoDao {
     public void create(Pedido pedido) {
         String sql = "INSERT INTO tbPedido (PED_CLIENTE, PED_QTDE, PED_DATA, PED_STATUS, PRA_CODIGO) VALUES (?, ?, ?, ?, ?)";
@@ -17,7 +16,7 @@ public class PedidoDao {
             stmt.setInt(2, pedido.getQuantidade());
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(pedido.getDataHora()));
             stmt.setString(4, pedido.getStatus());
-            stmt.setInt(5, pedido.getPrato().getCod());
+            stmt.setInt(5, pedido.getPrato().getCodigo()); // padronize aqui!
             stmt.executeUpdate();
         } catch(SQLException error) {
             throw new RuntimeException("Erro ao criar o Pedido", error);
@@ -33,7 +32,7 @@ public class PedidoDao {
                 Pedido pedido = new Pedido();
                 Prato prato = new Prato();
                 pedido.setIdPedido(result.getInt("PED_CODIGO"));
-                prato.setCod(result.getInt("PRA_CODIGO"));
+                prato.setCodigo(result.getInt("PRA_CODIGO")); // padronize aqui!
                 pedido.setPrato(prato);
                 pedido.setCliente(result.getString("PED_CLIENTE"));
                 pedido.setQuantidade(result.getInt("PED_QTDE"));
@@ -57,7 +56,7 @@ public class PedidoDao {
             stmt.setInt(2, pedido.getQuantidade());
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(pedido.getDataHora()));
             stmt.setString(4, pedido.getStatus());
-            stmt.setInt(5, pedido.getPrato().getCod());
+            stmt.setInt(5, pedido.getPrato().getCodigo()); // padronize aqui!
             stmt.setInt(6, pedido.getIdPedido());
             stmt.executeUpdate();
         } catch(SQLException error) {
