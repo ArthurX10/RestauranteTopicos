@@ -19,7 +19,7 @@ public class PedidoDao {
             stmt.setInt(5, pedido.getPrato().getCodigo());
             stmt.executeUpdate();
         } catch(SQLException error) {
-            throw new RuntimeException("Erro ao criar o Pedido", error);
+            throw new RuntimeException("Erro ao criar o Pedido.", error);
         }
     }
 
@@ -45,7 +45,7 @@ public class PedidoDao {
             }
             return pedidos;
         } catch(SQLException error) {
-            throw new RuntimeException("Erro ao listar os pedidos", error);
+            throw new RuntimeException("Erro ao listar os Pedidos.", error);
         }
     }
 
@@ -60,7 +60,7 @@ public class PedidoDao {
             stmt.setInt(6, pedido.getIdPedido());
             stmt.executeUpdate();
         } catch(SQLException error) {
-            throw new RuntimeException("Erro ao atualizar o pedido", error);
+            throw new RuntimeException("Erro ao atualizar o Pedido.", error);
         }
     }
 
@@ -70,7 +70,35 @@ public class PedidoDao {
             stmt.setInt(1, idPedido);
             stmt.executeUpdate();
         } catch(SQLException error) {
-            throw new RuntimeException("Erro ao deletar o pedido", error);
+            throw new RuntimeException("Erro ao deletar o Pedido.", error);
+        }
+    }
+
+    public pedido search(int idPedido){
+        String sql = "SELECT * FROM tbPedido WHERE PED_CODIGO = ?";
+        try(PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)){
+            stmt.setInt(1, idPedido);
+            Resultset result = stmt.executeQuery();
+
+                if(result.next(){
+                    Pedido pedido = new Pedido();
+                    Prato prato = new Prato();
+                    pedido.setIdPedido(result.getInt("PED_CODIGO"));
+                    prato.setCodigo(result.getInt("PRA_CODIGO")); 
+                    pedido.setPrato(prato);
+                    pedido.setCliente(result.getString("PED_CLIENTE"));
+                    pedido.setQuantidade(result.getInt("PED_QTDE"));
+                    java.sql.Timestamp ts = result.getTimestamp("PED_DATA");
+                    if (ts != null) {
+                        pedido.setDataHora(ts.toLocalDateTime());
+                    }
+                    pedido.setStatus(result.getString("PED_STATUS"));
+                    return pedido;
+                } else {
+                    return null;
+                }
+        } catch(SQLException error){
+            throw new RuntimeException("Erro ao pesquisar o Pedido.", error)
         }
     }
 }
