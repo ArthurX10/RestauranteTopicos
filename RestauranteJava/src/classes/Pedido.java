@@ -21,7 +21,7 @@ public class Pedido{
         this.prato = prato;
         this.cliente = cliente;
         this.quantidade = quantidade;
-        this.dataHora = dataHora;
+        this.dataHora = LocalDateTime.now();
         this.status = "PENDENTE";
     }
 
