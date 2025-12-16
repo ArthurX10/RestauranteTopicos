@@ -78,9 +78,9 @@ public class PedidoDao {
         String sql = "SELECT * FROM tbPedido WHERE PED_CODIGO = ?";
         try(PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)){
             stmt.setInt(1, idPedido);
-            Resultset result = stmt.executeQuery();
+            ResultSet result = stmt.executeQuery();
 
-                if(result.next(){
+                if(result.next()){
                     Pedido pedido = new Pedido();
                     Prato prato = new Prato();
                     pedido.setIdPedido(result.getInt("PED_CODIGO"));
@@ -98,7 +98,7 @@ public class PedidoDao {
                     return null;
                 }
         } catch(SQLException error){
-            throw new RuntimeException("Erro ao pesquisar o Pedido.", error)
+            throw new RuntimeException("Erro ao pesquisar o Pedido.", error);
         }
     }
 }
