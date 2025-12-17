@@ -5,25 +5,21 @@ import ConexaoBD.ConexaoBD;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 public class PratoDAO extends ConexaoBD {
 
-   
     public void adicionarPrato(Prato prato) {
         String sql = "INSERT INTO tbPrato (PRA_NOME, PRA_CATEGORIA, PRA_PRECO, PRA_DISPONIBILIDADE, PRA_DESCRICAO) VALUES (?, ?, ?, ?, ?)";
 
-         try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
             stmt.setString(1, prato.getNome());
             stmt.setString(2, prato.getCategoria());
             stmt.setDouble(3, prato.getPreco());
             stmt.setBoolean(4, prato.getDisp());
             stmt.setString(5, prato.getDescricao());
             stmt.executeUpdate();
-
-        } catch (SQLException error) {
-            error.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao adicionar prato: " + error.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -31,12 +27,11 @@ public class PratoDAO extends ConexaoBD {
         List<Prato> list = new ArrayList<>();
         String sql = "SELECT * FROM tbPrato";
 
-         try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);
+        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-          
+
             while (rs.next()) {
                 Prato prato = new Prato();
-                
                 prato.setCodigo(rs.getInt("PRA_CODIGO"));
                 prato.setNome(rs.getString("PRA_NOME"));
                 prato.setCategoria(rs.getString("PRA_CATEGORIA"));
@@ -45,67 +40,60 @@ public class PratoDAO extends ConexaoBD {
                 prato.setDescricao(rs.getString("PRA_DESCRICAO"));
                 list.add(prato);
             }
-        } catch (SQLException error) {
-            throw new RuntimeException("Erro ao listar pratos", error);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return list;
     }
 
-    public void atualizarPrato(Prato prato) {
+    public boolean atualizarPrato(Prato prato) {
         String sql = "UPDATE tbPrato SET PRA_NOME = ?, PRA_CATEGORIA = ?, PRA_PRECO = ?, PRA_DISPONIBILIDADE = ?, PRA_DESCRICAO = ? WHERE PRA_CODIGO = ?";
 
-      try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
             stmt.setString(1, prato.getNome());
             stmt.setString(2, prato.getCategoria());
             stmt.setDouble(3, prato.getPreco());
             stmt.setBoolean(4, prato.getDisp());
             stmt.setString(5, prato.getDescricao());
             stmt.setInt(6, prato.getCodigo());
-
-            stmt.executeUpdate();
-        } catch (SQLException error) {
-            throw new RuntimeException("Erro ao atualizar prato", error);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void deletarPrato(int codigo) {
-        String sql = "DELETE FROM tbPrato WHERE PRA_CODIGO = ?";
+  public boolean deletarPrato(int codigo) {
+    String sql = "DELETE FROM tbPrato WHERE PRA_CODIGO = ?";
 
-       try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
-
-            stmt.setInt(1, codigo);
-            stmt.executeUpdate();
-
-        } catch (SQLException error) {
-            error.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao deletar prato: " + error.getMessage());
-        }
+    try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+        stmt.setInt(1, codigo);
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException error) {
+        throw new RuntimeException(error);
     }
+}
 
     public Prato pesquisarPrato(int codigo) {
         String sql = "SELECT * FROM tbPrato WHERE PRA_CODIGO = ?";
-        Prato prato = null;
 
-      try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
-
+        try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
             stmt.setInt(1, codigo);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                prato = new Prato();
+                Prato prato = new Prato();
                 prato.setCodigo(rs.getInt("PRA_CODIGO"));
                 prato.setNome(rs.getString("PRA_NOME"));
                 prato.setCategoria(rs.getString("PRA_CATEGORIA"));
                 prato.setPreco(rs.getDouble("PRA_PRECO"));
                 prato.setDisp(rs.getBoolean("PRA_DISPONIBILIDADE"));
                 prato.setDescricao(rs.getString("PRA_DESCRICAO"));
+                return prato;
             }
-        } catch (SQLException error) {
-            throw new RuntimeException("Erro ao buscar prato", error);
+            return null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        return prato;
     }
 }
