@@ -287,7 +287,7 @@ public class FrmPrato extends javax.swing.JFrame {
     }                                                
 
     private void btnInserirPratoActionPerformed(java.awt.event.ActionEvent evt) {                                                
-        try {
+         try {
           
            String nome = txtNomePrato.getText();
            String categoria = txtCategoriaPrato.getText();
@@ -326,64 +326,14 @@ public class FrmPrato extends javax.swing.JFrame {
     }                                                 
 
     private void btnEditarPratoActionPerformed(java.awt.event.ActionEvent evt) {                                               
-      try {
-      
-          String idStr = JOptionPane.showInputDialog(this, "Qual o id do Produto que você que editar: ");
-            if(idStr == null || idStr.trim().isEmpty()){
-                JOptionPane.showMessageDialog(this, "Id não encontrado ou operação cancelada!");
-                return;
-            }
-          
-           int codigo = Integer.parseInt(idStr.trim());
-           PratoDAO dao = new PratoDAO();
-           Prato prato = dao.pesquisarPrato(codigo);
-
-        if (prato == null) {
-            JOptionPane.showMessageDialog(this, "Prato não encontrado!");
+     try {
+        String idStr = JOptionPane.showInputDialog(this, "Qual o id do Produto que você quer editar:");
+        if (idStr == null || idStr.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Operação cancelada!");
             return;
         }
 
-            String nome = txtNomePrato.getText();
-            String categoria = txtCategoriaPrato.getText();
-            String precoStr = txtPrecoPrato.getText();
-            String descricao = txtDescricaoPrato.getText();
-            
-            
-            if(nome.isEmpty() || categoria.isEmpty() || precoStr.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Preencha todos os campos do Formulario");
-            }
-            
-            double preco = Double.parseDouble(precoStr);
-            
-             
-            prato.setCodigo(codigo); 
-            prato.setNome(nome);
-            prato.setCategoria(categoria);
-            prato.setPreco(preco);
-            prato.setDescricao(descricao);
-            prato.setDisp(true);
-           
-            dao.atualizarPrato(prato);
-             
-            JOptionPane.showMessageDialog(this,"Prato atualizado com sucesso!");
-            limparCampos();
-            
-        }catch(NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Preço invalido!");
-        }catch(Exception e) {
-        JOptionPane.showMessageDialog(this, "Erro ao atualizar prato: " + e.getMessage());
-    }
-    }                                              
-
-    private void btnExcluirPratoActionPerformed(java.awt.event.ActionEvent evt) {                                                
-         try {
-        String id = JOptionPane.showInputDialog(this, "Digite o ID do prato que deseja excluir:\n");
-        if (id == null || id.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Operação cancelada ou ID não informado.");
-            return;
-        }
-
-        int codigo = Integer.parseInt(id.trim());
+        int codigo = Integer.parseInt(idStr.trim());
         PratoDAO dao = new PratoDAO();
         Prato prato = dao.pesquisarPrato(codigo);
 
@@ -392,25 +342,74 @@ public class FrmPrato extends javax.swing.JFrame {
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Tem certeza que deseja excluir o prato de ID " + codigo + "?", 
-            "Confirmação", JOptionPane.YES_NO_OPTION);
-        if (confirm != JOptionPane.YES_OPTION) {
+        String nome = txtNomePrato.getText();
+        String categoria = txtCategoriaPrato.getText();
+        String precoStr = txtPrecoPrato.getText();
+        String descricao = txtDescricaoPrato.getText();
+
+        if (nome.isEmpty() || categoria.isEmpty() || precoStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos do Formulário");
             return;
         }
 
-        dao.deletarPrato(codigo);
-        JOptionPane.showMessageDialog(this, "Prato excluído com sucesso!");
+        double preco = Double.parseDouble(precoStr);
+
+        prato.setCodigo(codigo);
+        prato.setNome(nome);
+        prato.setCategoria(categoria);
+        prato.setPreco(preco);
+        prato.setDescricao(descricao);
+        prato.setDisp(true);
+
+        if (dao.atualizarPrato(prato)) {
+            JOptionPane.showMessageDialog(this, "Prato atualizado com sucesso!");
+            limparCampos();
+        } else {
+            JOptionPane.showMessageDialog(this, "ID não encontrado. Nenhuma alteração feita.");
+        }
 
     } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Por favor, digite um número válido para o ID.");
+        JOptionPane.showMessageDialog(this, "Preço inválido!");
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Erro ao atualizar prato: " + e.getMessage());
+    }
+    }                                              
+
+    private void btnExcluirPratoActionPerformed(java.awt.event.ActionEvent evt) {                                                
+         try {
+        String id = JOptionPane.showInputDialog(this, "Digite o ID do prato que deseja excluir:");
+        if (id == null || id.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Operação cancelada.");
+            return;
+        }
+
+        int codigo = Integer.parseInt(id.trim());
+        PratoDAO dao = new PratoDAO();
+
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Tem certeza que deseja excluir o prato de ID " + codigo + "?",
+            "Confirmação",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        if (dao.deletarPrato(codigo)) {
+            JOptionPane.showMessageDialog(this, "Prato excluído com sucesso!");
+        } else {
+            JOptionPane.showMessageDialog(this, "ID não encontrado. Nenhum prato foi excluído.");
+        }
+
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Digite um ID numérico válido.");
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Erro ao excluir prato: " + e.getMessage());
     }
     }                                               
 
     private void btnListarPratoActionPerformed(java.awt.event.ActionEvent evt) {                                               
-         try {
+        try {
              
         PratoDAO dao = new PratoDAO();
         List<Prato> pratos = dao.listarPrato();
@@ -430,14 +429,13 @@ public class FrmPrato extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "Erro ao listar pratos: " + e.getMessage());
     }
     }                                              
-    
+ 
     private void limparCampos() {
         txtNomePrato.setText("");
         txtCategoriaPrato.setText("");
         txtPrecoPrato.setText("");
         txtDescricaoPrato.setText("");
     }
-    
     /**
      * @param args the command line arguments
      */
@@ -475,8 +473,6 @@ public class FrmPrato extends javax.swing.JFrame {
             }
         });
     }
-    
-    
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnEditarPrato;
