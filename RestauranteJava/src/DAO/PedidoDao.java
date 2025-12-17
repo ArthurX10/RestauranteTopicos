@@ -8,29 +8,35 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PedidoDao {
+public class PedidoDao extends ConexaoBD{
     public void create(Pedido pedido) {
         String sql = "INSERT INTO tbPedido (PED_CLIENTE, PED_QTDE, PED_DATA, PED_STATUS, PRA_CODIGO) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
+           
             stmt.setString(1, pedido.getCliente());
             stmt.setInt(2, pedido.getQuantidade());
             stmt.setTimestamp(3, java.sql.Timestamp.valueOf(pedido.getDataHora()));
             stmt.setString(4, pedido.getStatus());
             stmt.setInt(5, pedido.getPrato().getCodigo());
             stmt.executeUpdate();
+            
         } catch(SQLException error) {
             throw new RuntimeException("Erro ao criar o Pedido.", error);
         }
     }
 
     public List<Pedido> read() {
-        String sql = "SELECT * FROM tbPedido";
         List<Pedido> pedidos = new ArrayList<>();
+        String sql = "SELECT * FROM tbPedido"; 
+        
         try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql);
              ResultSet result = stmt.executeQuery()) {
+            
             while(result.next()) {
+                
                 Pedido pedido = new Pedido();
                 Prato prato = new Prato();
+                
                 pedido.setIdPedido(result.getInt("PED_CODIGO"));
                 prato.setCodigo(result.getInt("PRA_CODIGO")); 
                 pedido.setPrato(prato);
@@ -42,6 +48,7 @@ public class PedidoDao {
                 }
                 pedido.setStatus(result.getString("PED_STATUS"));
                 pedidos.add(pedido);
+                
             }
             return pedidos;
         } catch(SQLException error) {
@@ -66,15 +73,17 @@ public class PedidoDao {
 
     public void delete(int idPedido) {
         String sql = "DELETE FROM tbPedido WHERE PED_CODIGO = ?";
+        
         try (PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)) {
             stmt.setInt(1, idPedido);
             stmt.executeUpdate();
+            
         } catch(SQLException error) {
             throw new RuntimeException("Erro ao deletar o Pedido.", error);
         }
     }
 
-    public pedido search(int idPedido){
+    public Pedido search(int idPedido){
         String sql = "SELECT * FROM tbPedido WHERE PED_CODIGO = ?";
         try(PreparedStatement stmt = ConexaoBD.getConexao().prepareStatement(sql)){
             stmt.setInt(1, idPedido);
