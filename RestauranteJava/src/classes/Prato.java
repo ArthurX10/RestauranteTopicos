@@ -1,4 +1,4 @@
-package Classes;
+package classes;
 
 public class Prato {
     private int codigo;
@@ -12,7 +12,7 @@ public class Prato {
         this.nome = nome;
         this.categoria = categoria;
         this.preco = preco;
-        this.disp = disp;
+        this.disp = true;
         this.descricao = descricao;
     }
 
